@@ -1,7 +1,10 @@
 # Architectural Decision Record: Utilization of Kafka Headers for Efficient Event Filtering
 
-## Context and Problem Statement
-We operate a payment event bus using Kafka, where multiple producers publish millions of events. Currently, five consumers are subscribed to this event bus, each needing only a subset (approximately 10%) of the events. Due to the absence of Kafka headers, consumers must parse and deserialize every event to determine its relevance, leading to significant performance inefficiencies.
+## Context and Problem Statement We operate a Payments Services Event Bus utilizing Kafka, where multiple producers and consumers interact with the system. Each consumer typically requires only a subset of the total events published. However, due to the absence of an efficient filtering mechanism, consumers are forced to deserialize all incoming data to identify relevant events. This process necessitates additional server capacity to handle the large volume of events, even though only a fraction is needed by each consumer. This inefficiency leads to several issues: 
+- **Consumer Frustration:** Consumers must process a vast amount of irrelevant data, which is time-consuming and resource-intensive.
+-  **Increased Platform Costs:** The need for additional server capacity and resources to handle the deserialization and filtering process significantly drives up costs.
+- **Network Latencies:** The large volume of data processed increases network latency, affecting overall system performance. The goal of this Architectural Decision Record (ADR) is to address these inefficiencies by implementing Kafka headers to enable more efficient event filtering. This approach aims to reduce the resource burden on consumers, lower platform costs, and improve system performance.
+
 
 ## Decision
 Implement Kafka headers to include metadata that will allow consumers to filter relevant events without needing to parse the entire event payload.
